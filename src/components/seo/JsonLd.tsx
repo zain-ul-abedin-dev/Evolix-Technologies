@@ -1,8 +1,8 @@
-"use strict";
 import React from "react";
 import { siteConfig } from "@/config/site";
 
 export const JsonLd: React.FC = () => {
+  const sameAs = Object.values(siteConfig.social).filter((url) => /^https?:\/\/[^/]+\/.+/.test(url));
   const schemaData = {
     "@context": "https://schema.org",
     "@graph": [
@@ -11,7 +11,8 @@ export const JsonLd: React.FC = () => {
         "@id": `${siteConfig.url}/#organization`,
         name: siteConfig.name,
         url: siteConfig.url,
-        logo: `${siteConfig.url}/assets/images/logo/logo.png`,
+        logo: `${siteConfig.url}/evolix-logo.png`,
+        image: `${siteConfig.url}/og-image.jpg`,
         description: siteConfig.description,
         email: siteConfig.contact.email,
         telephone: siteConfig.contact.phone,
@@ -20,18 +21,17 @@ export const JsonLd: React.FC = () => {
           addressLocality: "Islamabad",
           addressCountry: "PK",
         },
-        sameAs: [
-          siteConfig.social.facebook,
-          siteConfig.social.twitter,
-          siteConfig.social.linkedin,
-          siteConfig.social.github,
-        ],
+        // Only real profile URLs: placeholders like "https://facebook.com" would tell Google the
+        // company *is* facebook.com. Fill in the profile links in src/config/site.ts.
+        ...(sameAs.length ? { sameAs } : {}),
       },
       {
         "@type": "ProfessionalService",
         "@id": `${siteConfig.url}/#service`,
         name: siteConfig.name,
-        image: `${siteConfig.url}/assets/images/hero/hm5-img01.webp`,
+        image: `${siteConfig.url}/og-image.jpg`,
+        url: siteConfig.url,
+        email: siteConfig.contact.email,
         priceRange: "$$",
         telephone: siteConfig.contact.phone,
         address: {

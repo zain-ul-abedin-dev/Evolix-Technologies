@@ -1,89 +1,17 @@
-@import "tailwindcss";
-
-/* ==========================================================
-   Evolix Technologies - Global CSS Variables & Design System
-   Direct 1-to-1 matching Inotek Template with Green as Theme Color
-   ========================================================== */
-:root {
-  /* Primary Theme Color (Replaced Blue with User's Green) */
-  --theme-color: #73eb0d;
-  --theme-color-hover: #5ebf0a;
-  --theme-color-dark: #4ca604;
-  --theme-color2: #8cf232;
-  --theme-color3: #061153;
-
-  /* Typography & Element Tokens */
-  --title-color: #061153;
-  --body-color: #616161;
-  --dark-color: #061153;
-  --dark-color2: #09155c;
-  --dark-color3: #18225f;
-  --dark-color4: #06134c;
-
-  --gray-color: #a0a3b5;
-  --gray-color2: #616161;
-  --white-color: #ffffff;
-  
-  /* Crisp Light Backgrounds from Inotek */
-  --light-color: #f4f7ff;
-  --light-color2: #e8edfa;
-  --light-color3: #e9eefb;
-  --light-color4: #b9bfe4;
-
-  --orange-color: #ff9d10;
-  --success-color: #28a745;
-  --error-color: #ff0000;
-
-  --bs-text-color1: #10171d;
-  --bs-text-color2: rgba(255, 255, 255, 0.60);
-  --bs-text-color3: rgba(255, 255, 255, 0.30);
-  --bs-text-color4: rgba(255, 255, 255, 0.85);
-  --bs-text-color5: #161616;
-
-  /* Theme Color Background Tints */
-  --bs-bg-color1: var(--theme-color);
-  --bs-bg-color2: #f3f6fe;
-  --bs-bg-color3: rgba(115, 235, 13, 0.18);
-  --bs-bg-color4: #dce5fc;
-  --bs-bg-color5: rgba(255, 255, 255, 0.10);
-  --bs-bg-color6: rgba(189, 189, 189, 0.2);
-  --bs-bg-color7: rgba(115, 235, 13, 0.12);
-  --bs-bg-color8: rgba(255, 255, 255, 0.70);
-  --bs-bg-color9: rgba(115, 235, 13, 0.20);
-  --bs-bg-color10: rgba(255, 255, 255, 0.30);
-  --bs-bg-color11: rgba(244, 247, 255, 0.30);
-  --bs-bg-color12: rgba(255, 255, 255, 0.2);
-  --bs-bg-color13: #121e62;
-  --bs-bg-color22: rgba(255, 255, 255, 0.15);
-
-  --bs-border-color: rgba(22, 22, 22, 0.08);
-  --bs-border-color2: rgba(3, 15, 68, 0.10);
-  --bs-border-color3: rgba(255, 255, 255, 0.25);
-  --bs-border-color5: rgba(255, 255, 255, 0.15);
-  --bs-border-color8: rgba(6, 17, 83, 0.08);
-  --bs-border-color10: rgba(115, 235, 13, 0.25);
-
-  --title-font: var(--font-manrope), 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --body-font: var(--font-noto-sans), 'Noto Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  
-  --section-space: 100px;
-  --section-space-mobile: 60px;
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 9px;
-}
-::-webkit-scrollbar-track {
-  background: #061153;
-}
-::-webkit-scrollbar-thumb {
-  background: #73eb0d;
-  border-radius: 5px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #5ebf0a;
-}
+/*
+ * Tailwind is only used by the site header + mobile drawer; every page section is the Inotek template
+ * (public/assets/css/inotek.css, scoped to `.inotek`). So:
+ *  - preflight is a generated copy that skips `.inotek` (see scripts/build-inotek-css.mjs);
+ *  - utilities are generated only from the files that use Tailwind classes. Scanning the template
+ *    markup would create utilities such as `.border` / `.mt-20` that clash with the template's classes.
+ */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "../styles/preflight-scoped.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+@source "../components/layout/Header.tsx";
+@source "../components/layout/OffcanvasDrawer.tsx";
+@source "./layout.tsx";
 
 @theme {
   --font-manrope: var(--title-font);
@@ -92,352 +20,142 @@
   --font-body: var(--body-font);
 }
 
-/* Base Body Styles */
-html {
-  scroll-behavior: smooth;
-  font-family: var(--body-font);
-  background-color: #ffffff;
-  color: var(--dark-color);
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  font-family: var(--body-font);
-  font-size: 16px;
-  line-height: 1.75;
-  color: var(--body-color);
-  background-color: #ffffff;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--title-font);
-  color: var(--title-color);
-  font-weight: 700;
-  line-height: 1.25;
-}
-
-button, input, textarea, select {
-  font-family: inherit;
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.3s ease;
-}
-
-/* Utility Classes */
-.bg-light { background-color: var(--light-color) !important; }
-.bg-light2 { background-color: var(--light-color2) !important; }
-.bg-dark { background-color: var(--dark-color) !important; }
-.bg-dark2 { background-color: var(--dark-color2) !important; }
-.bg-dark4 { background-color: var(--dark-color4) !important; }
-.bg-theme { background-color: var(--theme-color) !important; }
-.text-theme { color: var(--theme-color) !important; }
-.text-dark { color: var(--dark-color) !important; }
-.text-white { color: #ffffff !important; }
-.text-muted { color: var(--gray-color2) !important; }
-
-.br-30 { border-radius: 30px !important; }
-.br-24 { border-radius: 24px !important; }
-.br-20 { border-radius: 20px !important; }
-.br-16 { border-radius: 16px !important; }
-
-.space { padding-top: var(--section-space); padding-bottom: var(--section-space); }
-.space-top { padding-top: var(--section-space); }
-.space-bottom { padding-bottom: var(--section-space); }
-
-@media (max-width: 991px) {
-  .space { padding-top: var(--section-space-mobile); padding-bottom: var(--section-space-mobile); }
-  .space-top { padding-top: var(--section-space-mobile); }
-  .space-bottom { padding-bottom: var(--section-space-mobile); }
-}
-
-/* ==========================================================
-   Theme Button Component (.theme-btn)
-   ========================================================== */
-.theme-btn {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  background-color: var(--theme-color);
-  color: #061153 !important;
-  font-family: var(--title-font);
-  font-weight: 700;
-  font-size: 15px;
-  padding: 14px 28px;
-  border-radius: 30px;
-  overflow: hidden;
-  border: none;
-  cursor: pointer;
-  z-index: 1;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 6px 20px rgba(115, 235, 13, 0.35);
-}
-
-.theme-btn:hover {
-  background-color: var(--theme-color-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(115, 235, 13, 0.45);
-}
-
-.theme-btn .link-effect {
-  position: relative;
-  display: inline-block;
-  overflow: hidden;
-  height: 22px;
-}
-
-.theme-btn .link-effect .effect-1 {
-  display: block;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.theme-btn:hover .link-effect .effect-1:first-child {
-  transform: translateY(-100%);
-}
-
-.theme-btn:hover .link-effect .effect-1:last-child {
-  transform: translateY(-100%);
-}
-
-.theme-btn .arrow-all {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  background-color: #061153;
-  border-radius: 50%;
-  transition: transform 0.3s ease;
-}
-
-.theme-btn .arrow-all svg path {
-  stroke: var(--theme-color) !important;
-}
-
-.theme-btn:hover .arrow-all {
-  transform: rotate(45deg);
-}
-
-/* Secondary Button Style (Dark Navy outline/fill) */
-.theme-btn.style-2 {
-  background-color: #061153;
-  color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: none;
-}
-
-.theme-btn.style-2 .arrow-all {
-  background-color: var(--theme-color);
-}
-
-.theme-btn.style-2 .arrow-all svg path {
-  stroke: #061153 !important;
-}
-
-.theme-btn.style-2:hover {
-  background-color: var(--theme-color);
-  color: #061153 !important;
-  border-color: var(--theme-color);
-}
-
-/* Sub-title Badge */
-.sub-title-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--title-font);
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: #061153;
-  background: rgba(115, 235, 13, 0.15);
-  border: 1px solid rgba(115, 235, 13, 0.35);
-  padding: 6px 16px;
-  border-radius: 20px;
-  margin-bottom: 16px;
-}
-
-.sub-title-badge.dark-mode {
-  background: rgba(115, 235, 13, 0.15);
-  color: var(--theme-color);
-  border-color: rgba(115, 235, 13, 0.35);
-}
-
-/* Main Section Heading */
-.sec-title {
-  font-size: 42px;
-  font-weight: 800;
-  color: var(--title-color);
-  letter-spacing: -0.5px;
-  line-height: 1.25;
-}
-
-@media (max-width: 768px) {
-  .sec-title {
-    font-size: 28px;
+/*
+ * Site-wide base styles and the Tailwind header's "Get Free Quote" button.
+ * Everything else on the pages is the Inotek template (public/assets/css/inotek.css, scoped to `.inotek`).
+ * These live in a cascade layer so the template CSS always wins inside `.inotek`, while they still
+ * beat Tailwind utilities elsewhere.
+ */
+@layer legacy {
+  :root {
+    --theme-color: #73eb0d;
+    --theme-color-hover: #5ebf0a;
+    --title-color: #1a1817;
+    --body-color: #616161;
+    --title-font: var(--font-manrope), "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --body-font: var(--font-noto-sans), "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
-}
 
-/* Marquee Animation */
-@keyframes marqueeScroll {
-  0% { transform: translateX(0%); }
-  100% { transform: translateX(-50%); }
-}
+  /* Page scrollbar */
+  ::-webkit-scrollbar {
+    width: 9px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #1a1817;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #73eb0d;
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #5ebf0a;
+  }
 
-.marquee-container {
-  display: flex;
-  overflow: hidden;
-  user-select: none;
-  white-space: nowrap;
-}
+  /* No `scroll-behavior: smooth` here: Lenis (components/inotek/SmoothScroll.tsx) does the smoothing,
+     and native smooth scrolling fights it (programmatic scrolls stop half-way). */
+  html {
+    font-family: var(--body-font);
+    background-color: #ffffff;
+    color: var(--title-color);
+  }
 
-.marquee-track {
-  display: flex;
-  flex-shrink: 0;
-  animation: marqueeScroll 25s linear infinite;
-}
+  body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-family: var(--body-font);
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--body-color);
+    background-color: #ffffff;
+  }
 
-.marquee-track:hover {
-  animation-play-state: paused;
-}
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--title-font);
+    color: var(--title-color);
+    font-weight: 700;
+    line-height: 1.25;
+  }
 
-/* Spin Animation */
-@keyframes spin360 {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
+  button,
+  input,
+  textarea,
+  select {
+    font-family: inherit;
+  }
 
-.animate-spin-slow {
-  animation: spin360 12s linear infinite;
-}
+  a {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+  }
 
-/* Team Card Four Style */
-.team-card-four {
-  position: relative;
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 12px 12px 28px 12px;
-  text-align: center;
-  box-shadow: 0px 20px 25px rgba(215, 219, 231, 0.3);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1px solid rgba(6, 17, 83, 0.08);
-}
+  /* Header "Get Free Quote" button (the template's `.theme-btn` inside `.inotek` is styled by inotek.css).
+     `:not(.inotek *)`: layered !important would otherwise override the template's buttons. */
+  .theme-btn:not(.inotek *) {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background-color: var(--theme-color);
+    color: #061153 !important;
+    font-family: var(--title-font);
+    font-weight: 700;
+    font-size: 15px;
+    padding: 14px 28px;
+    border-radius: 30px;
+    overflow: hidden;
+    border: none;
+    cursor: pointer;
+    z-index: 1;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 6px 20px rgba(115, 235, 13, 0.35);
+  }
 
-.team-card-four:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 25px 45px rgba(115, 235, 13, 0.15);
-  border-color: rgba(115, 235, 13, 0.4);
-}
+  .theme-btn:not(.inotek *):hover {
+    background-color: var(--theme-color-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(115, 235, 13, 0.45);
+  }
 
-.team-card-four .team-img-box {
-  position: relative;
-  border-radius: 20px;
-  overflow: hidden;
-}
+  .theme-btn:not(.inotek *) .link-effect {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    height: 22px;
+  }
 
-.team-card-four .team-img-box img {
-  width: 100%;
-  display: block;
-  border-radius: 18px;
-  transition: transform 0.5s ease;
-}
+  .theme-btn:not(.inotek *) .link-effect .effect-1 {
+    display: block;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
 
-.team-card-four:hover .team-img-box img {
-  transform: scale(1.05);
-}
+  .theme-btn:not(.inotek *):hover .link-effect .effect-1:first-child,
+  .theme-btn:not(.inotek *):hover .link-effect .effect-1:last-child {
+    transform: translateY(-100%);
+  }
 
-.team-card-four .team-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(0deg, rgba(6, 17, 83, 0.9) 0%, rgba(6, 17, 83, 0.4) 40%, transparent 100%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding-bottom: 20px;
-}
+  .theme-btn:not(.inotek *) .arrow-all {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background-color: #061153;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+  }
 
-.team-card-four:hover .team-overlay {
-  opacity: 1;
-}
+  .theme-btn:not(.inotek *) .arrow-all svg path {
+    stroke: var(--theme-color) !important;
+  }
 
-.team-card-four .team-role-badge {
-  display: inline-block;
-  padding: 6px 20px;
-  border-radius: 14px;
-  font-size: 13px;
-  font-weight: 600;
-  background: #f4f7ff;
-  color: var(--gray-color2);
-  border: 1px solid rgba(6, 17, 83, 0.08);
-  transition: all 0.3s ease;
-}
-
-.team-card-four:hover .team-role-badge {
-  background: var(--theme-color);
-  color: #061153;
-  border-color: var(--theme-color);
-}
-
-/* Testimonial Card */
-.testi-card-five {
-  background: #ffffff;
-  padding: 40px;
-  border-radius: 24px;
-  border: 1px solid rgba(6, 17, 83, 0.08);
-  position: sticky;
-  top: 120px;
-  transition: all 0.3s ease;
-  box-shadow: 0px 20px 25px rgba(215, 219, 231, 0.25);
-}
-
-.testi-card-five:hover {
-  border-color: var(--theme-color);
-  box-shadow: 0 20px 40px rgba(115, 235, 13, 0.12);
-}
-
-/* Service Card Five */
-.service-card-five {
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 36px 30px;
-  border: 1px solid rgba(6, 17, 83, 0.08);
-  transition: all 0.4s ease;
-  position: relative;
-  overflow: hidden;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 0px 15px 25px rgba(215, 219, 231, 0.2);
-}
-
-.service-card-five:hover {
-  transform: translateY(-6px);
-  border-color: var(--theme-color);
-  box-shadow: 0 25px 45px rgba(115, 235, 13, 0.15);
-}
-
-.service-card-five .service-number {
-  font-family: var(--title-font);
-  font-size: 14px;
-  font-weight: 800;
-  background: #f4f7ff;
-  color: #061153;
-  padding: 4px 14px;
-  border-radius: 20px;
-  display: inline-block;
-  transition: all 0.3s ease;
-}
-
-.service-card-five:hover .service-number {
-  background: var(--theme-color);
-  color: #061153;
+  .theme-btn:not(.inotek *):hover .arrow-all {
+    transform: rotate(45deg);
+  }
 }

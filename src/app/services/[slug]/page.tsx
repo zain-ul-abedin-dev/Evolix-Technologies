@@ -1,10 +1,12 @@
-import React from "react";
-import Image from "next/image";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CheckCircle2, ArrowLeft, ArrowRight, ShieldCheck, Zap } from "lucide-react";
 import { siteConfig } from "@/config/site";
-import { ContactSection } from "@/components/home/ContactSection";
+import { serviceImage } from "@/config/media";
+import { PageBreadcrumb } from "@/components/inotek/PageBreadcrumb";
+import { ThemeButton } from "@/components/inotek/ThemeButton";
+import { FaqAccordion } from "@/components/inotek/FaqAccordion";
+import { Img } from "@/components/inotek/Img";
 import { NewsletterBox } from "@/components/home/NewsletterBox";
 
 interface Props {
@@ -15,7 +17,7 @@ export async function generateStaticParams() {
   return siteConfig.services.map((s) => ({ slug: s.slug }));
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const service = siteConfig.services.find((s) => s.slug === slug);
   if (!service) return { title: "Service Not Found" };
@@ -24,151 +26,176 @@ export async function generateMetadata({ params }: Props) {
     title: `${service.title} - Services`,
     description: service.shortDesc,
     keywords: [service.title, "IT Services Islamabad", "Evolix Technologies", "Custom Software"],
+    alternates: { canonical: `/services/${service.slug}` },
+    openGraph: { images: [serviceImage(service.slug)] },
   };
 }
 
+const faqs = (title: string) => [
+  {
+    question: `01. How long does a ${title.toLowerCase()} project take?`,
+    answer:
+      "Most projects take 2 to 8 weeks depending on scope. After a free consultation we share a clear timeline with milestones, so you always know what is being delivered and when.",
+  },
+  {
+    question: "02. How much does it cost?",
+    answer:
+      "Pricing depends on your requirements. We give a fixed quote after understanding your goals, with no hidden costs, and flexible packages for startups and growing businesses.",
+  },
+  {
+    question: "03. Do you provide support after launch?",
+    answer:
+      "Yes. We offer ongoing maintenance, security updates, performance monitoring and improvements, so your product keeps running smoothly and keeps growing.",
+  },
+];
+
+/** Service detail – layout of the Inotek template's service-details.html. */
 export default async function ServiceDetailPage({ params }: Props) {
   const { slug } = await params;
   const service = siteConfig.services.find((s) => s.slug === slug);
+  if (!service) notFound();
 
-  if (!service) {
-    notFound();
-  }
+  const half = Math.ceil(service.features.length / 2);
+  const featureLists = [service.features.slice(0, half), service.features.slice(half)];
 
   return (
-    <>
-      {/* Page Header */}
-      <section className="relative py-24 bg-[#1a1817] text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <Image
-            src="/assets/images/cta/hm5-bg02.webp"
-            alt="Service Background"
-            fill
-            className="object-cover"
-          />
-        </div>
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
-          <Link
-            href="/services"
-            className="inline-flex items-center gap-2 text-xs font-bold text-[#73eb0d] uppercase tracking-wider mb-6 hover:underline"
-          >
-            <ArrowLeft size={14} /> Back to All Services
-          </Link>
-          <div className="sub-title-badge dark-mode">
-            <CheckCircle2 size={16} className="text-[#73eb0d]" />
-            <span>Service Detail</span>
-          </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mt-3 max-w-3xl">
-            {service.title}
-          </h1>
-          <p className="max-w-2xl text-base sm:text-lg text-white/70 mt-4 leading-relaxed">
-            {service.shortDesc}
-          </p>
-        </div>
-      </section>
-
-      {/* Main Content & Features */}
-      <section className="py-20 lg:py-28 bg-[#f6f4f3]">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            {/* Left Main Article */}
-            <div className="lg:col-span-8 space-y-8 bg-white p-8 sm:p-12 rounded-3xl border border-black/5 shadow-xl">
-              <div className="flex items-center gap-4 pb-6 border-b border-black/5">
-                <div className="w-16 h-16 rounded-2xl bg-[#73eb0d]/20 flex items-center justify-center shrink-0">
-                  <Image src={service.icon} alt={service.title} width={36} height={36} />
-                </div>
-                <div>
-                  <span className="text-xs font-extrabold uppercase tracking-widest text-[#73eb0d]">
-                    Enterprise Offering #{service.id}
-                  </span>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-[#1a1817]">
-                    Overview & Capabilities
-                  </h2>
-                </div>
-              </div>
-
-              <div className="prose text-[#5a5856] text-base leading-relaxed space-y-4">
-                <p>
-                  At <strong>Evolix Technologies</strong>, our approach to <strong>{service.title}</strong> is centered on performance, security, and measurable ROI. We build scalable systems that streamline user operations and accelerate conversions.
-                </p>
-                <p>
-                  Every solution is engineered with modern best practices, automated CI/CD deployment pipelines, responsive design, and deep search engine optimization.
-                </p>
-              </div>
-
-              {/* Key Features Included */}
-              <div className="pt-6">
-                <h3 className="text-xl font-bold text-[#1a1817] mb-6">
-                  What is Included in this Service:
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {service.features.map((feat, i) => (
-                    <div
-                      key={i}
-                      className="flex items-start gap-3 p-4 rounded-2xl bg-[#f6f4f3] border border-black/5"
-                    >
-                      <CheckCircle2 size={18} className="text-[#73eb0d] shrink-0 mt-0.5" />
-                      <span className="text-sm font-semibold text-[#1a1817]">{feat}</span>
+    <div className="inotek">
+      <div className="page-wrapper bg-light">
+        <PageBreadcrumb title={service.title} trail={[{ name: "Services", href: "/services" }, { name: service.title }]} />
+        <section className="services-details space bg-light">
+          <div className="container">
+            <div className="row">
+              <div className="col-xl-4 col-lg-4">
+                <div className="service-sidebar">
+                  <div className="sidebar-widget service-sidebar-single">
+                    <div className="widget-box category-list">
+                      <h4 className="sidebar-title">Our Services</h4>
+                      <div className="sidebar-service-list">
+                        <ul>
+                          {siteConfig.services.map((s) => (
+                            <li key={s.slug} className={s.slug === service.slug ? "current" : undefined}>
+                              <Link href={`/services/${s.slug}`}>
+                                {s.title}
+                                <i className="fas fa-arrow-right" />
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
-                  ))}
+                    <div className="widget-box service-details-help bg-dark">
+                      <div className="bg image">
+                        <Img src="/assets/images/service/details-bg.webp" alt="" loading="lazy" />
+                      </div>
+                      <div className="service-details-content">
+                        <div className="icon">
+                          <Img src="/assets/images/icons/contact.png" alt="" />
+                        </div>
+                        <h2 className="help-title">
+                          Need Tech Service?
+                          <br />
+                          Contact Us
+                        </h2>
+                        <p className="text">Talk to our team for a free consultation and a clear project quote</p>
+                        <div className="help-contact">
+                          <ThemeButton href="/contact" label="Contact with Us" className="br-30" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-
-              {/* Consultation CTA */}
-              <div className="p-8 rounded-3xl bg-[#1a1817] text-white mt-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-                <div>
-                  <h4 className="text-xl font-bold text-white">Need a Custom Quote?</h4>
-                  <p className="text-xs text-white/60 mt-1">Get in touch for a technical breakdown and scope estimate.</p>
+              <div className="col-xl-8 col-lg-8">
+                <div className="services-details__content">
+                  <div className="image overlay-anim1">
+                    <Img className="br-10 w-100" src={serviceImage(service.slug)} alt={service.title} fetchPriority="high" />
+                  </div>
+                  <h2 className="title-two h3">{service.title}</h2>
+                  <p>{service.shortDesc}</p>
+                  <p className="mb-25">
+                    At {siteConfig.name}, our approach to {service.title.toLowerCase()} is centered on performance, security and measurable
+                    results. We plan carefully, build with modern best practices and keep you updated at every step, so the final result
+                    fits your business and your customers.
+                  </p>
+                  <div className="row gy-30 align-items-center">
+                    <div className="row service-details-box my-40  md-my-0 md-gy-30">
+                      <div className="col-lg-6 col-md-6">
+                        <div className="service-details-block">
+                          <div className="inner-box d-flex align-items-center">
+                            <div className="icon mr-20">
+                              <Img src="/assets/images/service/alam.webp" alt="" />
+                            </div>
+                            <h5 className="title my-0">
+                              On-Time Delivery
+                              <br />
+                              Guarantee
+                            </h5>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-lg-6 col-md-6">
+                        <div className="service-details-block">
+                          <div className="inner-box d-flex align-items-center">
+                            <div className="icon bg-dark mr-20">
+                              <Img src="/assets/images/service/check.webp" alt="" />
+                            </div>
+                            <h5 className="title my-0">
+                              Quality and Security
+                              <br />
+                              Guarantee
+                            </h5>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <h3 className="title">What is Included?</h3>
+                    <p className="my-0">
+                      Every {service.title.toLowerCase()} engagement includes the following, tailored to your goals and budget.
+                    </p>
+                    <div className="row md-gy-30 align-items-center mt-30 md-mt-0 mb-40 md-mb-0">
+                      {featureLists.map((list, i) => (
+                        <div key={i} className="col-lg-6 col-md-6 col-sm-6">
+                          <div className="featured-list">
+                            <ul className="list-style-1">
+                              {list.map((feature) => (
+                                <li key={feature}>
+                                  <span>
+                                    <Img src="/assets/images/service/details-check.webp" alt="" />
+                                  </span>
+                                  {feature}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="row md-gy-30 align-items-center">
+                      <div className="col-lg-6 col-md-6 col-sm-6">
+                        <div className="details-image-box overlay-anim1">
+                          <Img className="img1 w-100 br-10" src="/assets/images/evolix/services/detail-team.webp" alt={`${siteConfig.name} team`} loading="lazy" />
+                        </div>
+                      </div>
+                      <div className="col-lg-6 col-md-6 col-sm-6">
+                        <div className="details-image-box overlay-anim1">
+                          <Img className="img1 w-100 br-10" src="/assets/images/evolix/services/detail-meeting.webp" alt="Client meeting" loading="lazy" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="innerpage mt-70 sm-mt-30">
+                      <h3 className="title mb-30 vxs-mb-25">Frequently Asked Questions</h3>
+                      <div className="tv-faq-section">
+                        <FaqAccordion items={faqs(service.title)} />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <Link href="/contact" className="theme-btn shrink-0">
-                  <span className="link-effect">
-                    <span className="effect-1">Request Quote</span>
-                    <span className="effect-1">Request Quote</span>
-                  </span>
-                  <span className="arrow-all">
-                    <ArrowRight size={14} className="text-[#73eb0d]" />
-                  </span>
-                </Link>
-              </div>
-            </div>
-
-            {/* Right Sidebar: Other Services */}
-            <div className="lg:col-span-4 space-y-6">
-              <div className="p-6 sm:p-8 rounded-3xl bg-white border border-black/5 shadow-lg">
-                <h4 className="text-lg font-bold text-[#1a1817] mb-4 pb-3 border-b border-black/5">
-                  All Services
-                </h4>
-                <ul className="space-y-2">
-                  {siteConfig.services.map((s) => {
-                    const isCurrent = s.slug === service.slug;
-                    return (
-                      <li key={s.id}>
-                        <Link
-                          href={`/services/${s.slug}`}
-                          className={`flex items-center justify-between p-3 rounded-xl text-sm font-semibold transition-all ${
-                            isCurrent
-                              ? "bg-[#1a1817] text-[#73eb0d]"
-                              : "text-[#5a5856] hover:bg-[#f6f4f3] hover:text-[#1a1817]"
-                          }`}
-                        >
-                          <span>{s.title}</span>
-                          <ArrowRight size={14} />
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Callback Contact Form */}
-      <ContactSection />
-
-      {/* Newsletter */}
-      <NewsletterBox />
-    </>
+        </section>
+        <NewsletterBox />
+      </div>
+    </div>
   );
 }

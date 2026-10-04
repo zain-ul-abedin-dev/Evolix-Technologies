@@ -1,96 +1,84 @@
-"use strict";
-import React from "react";
-import Image from "next/image";
-import { Star } from "lucide-react";
+import { Fragment } from "react";
 import { siteConfig } from "@/config/site";
+import { Img } from "@/components/inotek/Img";
 
-export const TestimonialsSection: React.FC = () => {
+/** Client testimonials (`.tv-testimonial-section.style-5`). Also used on /about. */
+export function TestimonialsSection() {
+  const average = (siteConfig.testimonials.reduce((sum, t) => sum + t.rating, 0) / siteConfig.testimonials.length).toFixed(1);
+
   return (
-    <section className="py-20 lg:py-28 bg-[#f3f6fe] relative z-10">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          {/* Left Column: Sticky Summary Box */}
-          <div className="lg:col-span-5 lg:sticky lg:top-28 space-y-6">
-            <div className="sub-title-badge">
-              <span className="w-2 h-2 rounded-full bg-[#73eb0d]" />
-              <span>Testimonial</span>
-            </div>
-            <h2 className="sec-title text-[#061153]">
-              Real Stories from Organic <br />
-              Clients Worldwide
-            </h2>
-            <p className="text-sm sm:text-base text-[#616161] leading-relaxed">
-              Inotek - is the reintermediate technically into chain references main extensive Dramatically faster main users next.
-            </p>
-
-            {/* Rating Summary Card */}
-            <div className="p-6 rounded-3xl bg-white border border-[#061153]/8 shadow-md flex items-center gap-5">
-              <div className="w-16 h-16 rounded-2xl bg-[#061153] text-[#73eb0d] flex items-center justify-center font-black text-2xl shrink-0">
-                5.0
-              </div>
-              <div>
-                <div className="flex items-center gap-1 text-[#ff9d10] mb-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={16} fill="#ff9d10" />
-                  ))}
+    <div className="inotek">
+      <section className="tv-testimonial-section style-5 bg-light2 space position-relative z-2">
+        <div className="container">
+          <div className="row gy-30">
+            <div className="col-lg-6 col-md-6">
+              <div className="testi-left">
+                <div className="title-wrap " data-wow-duration="2s" data-wow-delay=".0s">
+                  <div className="sub-title-2 text-theme">
+                    <i className="fa-solid fa-circle-check" />
+                    Testimonial
+                  </div>
+                  <h2 className="sec-title text-dark">
+                    Real Stories from Organic <br />
+                    Clients Worldwide
+                  </h2>
+                  <p>
+                    {siteConfig.name} - trusted by startups and enterprises <br />
+                    to design, build and grow their digital products
+                  </p>
                 </div>
-                <h4 className="font-extrabold text-base text-[#061153]">Average Our Clients Ratings</h4>
-                <span className="text-xs text-[#616161]">Based on verified customer reviews</span>
+                <div className="border mb-15" />
+                <div className="client-social-proof">
+                  <div className="social">
+                    <div className="icon">
+                      <Img src="/assets/images/video/hm5-icon02.webp" alt="" />
+                    </div>
+                    <div className="icon bg-dark">{average}</div>
+                  </div>
+                  <div className="content">
+                    <h4>
+                      Average Our <br /> Clients Ratings
+                    </h4>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* Right Column: Stacking Testimonial Cards */}
-          <div className="lg:col-span-7 space-y-6">
-            {siteConfig.testimonials.map((testi, index) => (
-              <div
-                key={testi.id}
-                className="testi-card-five bg-white"
-                style={{ top: `${100 + index * 20}px` }}
-              >
-                {/* Quote Header */}
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-xl font-bold text-[#061153] flex items-center gap-2">
-                    <Image
-                      src="/assets/images/testimonial/hm5-quote.webp"
-                      alt="Quote"
-                      width={28}
-                      height={28}
-                    />
-                    {testi.quote}
-                  </h4>
-                  <div className="flex items-center gap-1 text-[#ff9d10]">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} size={14} fill="#ff9d10" />
+            <div className="col-lg-6 col-md-6">
+              {siteConfig.testimonials.map((t, i) => (
+                <div key={t.id} className={`testi-box-five${i ? " mt-25" : ""}`}>
+                  <div className="content">
+                    <h4 className="title">
+                      <Img className="quote-icon" src="/assets/images/testimonial/hm5-quote.webp" alt="" />
+                      {t.quote}
+                    </h4>
+                    <p>{t.text}</p>
+                  </div>
+                  <div className="rating" aria-label={`Rated ${t.rating} out of 5`}>
+                    {Array.from({ length: 5 }, (_, s) => (
+                      <Fragment key={s}>
+                        <i className="fas fa-star" />{" "}
+                      </Fragment>
                     ))}
-                    <span className="ml-1 font-bold text-xs text-[#061153]">{testi.rating}</span>
+                    <span>{t.rating.toFixed(1)}</span>
+                  </div>
+                  <div className="box-user">
+                    <div className="image position-relative z-1">
+                      <Img src={t.avatar} alt={t.author} loading="lazy" />
+                      <span className="quote-icon">
+                        <i className="fa-solid fa-quote-left" />
+                      </span>
+                    </div>
+                    <div className="testi-info">
+                      <h4>{t.author}</h4>
+                      <p>{t.role}</p>
+                    </div>
                   </div>
                 </div>
-
-                <p className="text-sm sm:text-base text-[#616161] leading-relaxed mb-6">
-                  {testi.text}
-                </p>
-
-                {/* Author Info */}
-                <div className="pt-4 border-t border-[#061153]/8 flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full overflow-hidden relative border-2 border-[#73eb0d]">
-                    <Image
-                      src={testi.avatar}
-                      alt={testi.author}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div>
-                    <h5 className="font-extrabold text-base text-[#061153]">{testi.author}</h5>
-                    <p className="text-xs text-[#616161]">{testi.role}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
-};
+}

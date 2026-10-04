@@ -28,13 +28,14 @@ export const OffcanvasDrawer: React.FC<OffcanvasDrawerProps> = ({ isOpen, onClos
         <div>
           {/* Header */}
           <div className="flex items-center justify-between pb-6 border-b border-white/10">
-            <Link href="/" onClick={onClose} className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-lg bg-[#73eb0d] flex items-center justify-center font-bold text-black text-xl">
-                E
-              </div>
-              <span className="font-bold text-xl tracking-tight text-white">
-                Evolix <span className="text-[#73eb0d]">Tech</span>
-              </span>
+            <Link href="/" onClick={onClose} className="flex items-center group">
+              <Image
+                src="/Evolix LOGO SVG -02.svg"
+                alt="Evolix Technologies"
+                width={150}
+                height={55}
+                className="h-8 sm:h-9 w-auto object-contain transition-transform group-hover:scale-105"
+              />
             </Link>
             <button
               onClick={onClose}

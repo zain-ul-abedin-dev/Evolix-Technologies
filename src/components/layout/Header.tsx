@@ -1,13 +1,13 @@
 "use strict";
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   Menu,
   X,
-  ChevronDown,
   LayoutGrid,
 } from "lucide-react";
 import { siteConfig } from "@/config/site";
@@ -18,22 +18,24 @@ export const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const pathname = usePathname();
+  const stickySentinel = useRef<HTMLDivElement>(null);
 
+  // Sticky once the page is scrolled more than 80px. Watched with an IntersectionObserver on a 1px
+  // marker instead of reading window.scrollY on every scroll event: that read forced the browser to
+  // recalculate style and layout on every frame of smooth scrolling and made scrolling lag.
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 80) {
-        setIsSticky(true);
-      } else {
-        setIsSticky(false);
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const marker = stickySentinel.current;
+    if (!marker) return;
+    const observer = new IntersectionObserver(([entry]) => setIsSticky(!entry.isIntersecting && entry.boundingClientRect.top < 0));
+    observer.observe(marker);
+    return () => observer.disconnect();
   }, []);
 
   return (
     <>
-      <header className="w-full relative z-40">
+      <header className="w-full absolute top-0 left-0 z-50">
+        {/* Marker at 80px from the top of the page (see the sticky effect above). */}
+        <div ref={stickySentinel} aria-hidden="true" className="absolute top-[80px] left-0 w-px h-px pointer-events-none" />
         {/* =========================================
             1. TOPBAR - Direct 1-to-1 matching Inotek Template
             ========================================= */}
@@ -43,8 +45,20 @@ export const Header: React.FC = () => {
             <div className="flex items-center gap-[35px]">
               {/* House / Address */}
               <div className="flex items-center text-white text-[16px] leading-none">
-                <svg className="w-[14px] h-[14px] text-white mr-[10px] shrink-0" fill="currentColor" viewBox="0 0 576 512">
-                  <path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 17-14 32.2-32 32.2h-64c-17 0-32-15-32-32V352h-96v96c0 17-15 32-32 32h-64c-18 0-32-15-32-32.2l.7-160.2h-32c-17 0-32-14.1-32-32.1 0-9 4-17 10-24L267.7 22.8c11.6-11.6 30.5-11.6 42.1 0l256 208.7c6 7 10 15 10 24z" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-[18px] h-[18px] text-white mr-[10px] shrink-0"
+                >
+                  <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
+                  <path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                 </svg>
                 <span>{siteConfig.contact.address}</span>
               </div>
@@ -54,8 +68,20 @@ export const Header: React.FC = () => {
                 href={`mailto:${siteConfig.contact.email}`}
                 className="flex items-center text-white text-[16px] leading-none hover:text-white transition-colors"
               >
-                <svg className="w-[14px] h-[14px] text-white mr-[10px] shrink-0" fill="currentColor" viewBox="0 0 512 512">
-                  <path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L288 338.7c-19 14.2-45 14.2-64 0L0 176z" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-[18px] h-[18px] text-white mr-[10px] shrink-0"
+                >
+                  <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+                  <rect x="2" y="4" width="20" height="16" rx="2" />
                 </svg>
                 <span>{siteConfig.contact.email}</span>
               </a>
@@ -111,119 +137,77 @@ export const Header: React.FC = () => {
         </div>
 
         {/* =========================================
-            2. MAIN NAVBAR - Glassy / Translucent Floating
+            2. MAIN NAVBAR - Glassy on Scroll & Clean Minimal Sticky
             ========================================= */}
         <div
-          className={`transition-all duration-300 px-6 lg:px-16 py-4 ${isSticky
-            ? "fixed top-0 left-0 right-0 bg-[#f6f4f3]/90 backdrop-blur-md shadow-lg border-b border-black/10 z-50 animate-in slide-in-from-top-2"
-            : "bg-[#f6f4f3]/80 backdrop-blur-xs border-b border-black/5"
+          className={`transition-all duration-300 px-6 xl:px-[60px] ${isSticky
+            ? "fixed top-0 left-0 right-0 bg-white/60 backdrop-blur-xl shadow-xs border-b border-black/5 z-50 py-3.5 animate-in slide-in-from-top-2"
+            : "bg-transparent border-b border-[#061153]/10 py-4"
             }`}
         >
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
-            {/* Logo - Inotek & Evolix Clean Branding */}
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-11 h-11 rounded-2xl bg-[#1a1817] flex items-center justify-center font-black text-[#73eb0d] text-2xl shadow-md group-hover:scale-105 transition-transform border border-black/10">
-                E
-              </div>
-              <div className="flex flex-col">
-                <span className="font-extrabold text-xl lg:text-2xl tracking-tight text-[#1a1817] leading-none">
-                  Evolix <span className="text-[#73eb0d]">Tech</span>
-                </span>
-                <span className="text-[10px] uppercase font-extrabold tracking-widest text-[#5a5856] mt-1">
-                  Technologies
-                </span>
-              </div>
+          <div className="flex items-center justify-between w-full">
+            {/* Logo - Evolix Official Vector SVG */}
+            <Link href="/" className="flex items-center group shrink-0 py-1">
+              <Image
+                src="/Evolix LOGO SVG -01.svg"
+                alt="Evolix Technologies Logo"
+                width={170}
+                height={62}
+                className="h-9 sm:h-10 md:h-11 w-auto object-contain transition-transform group-hover:scale-105"
+                priority
+              />
             </Link>
 
             {/* Desktop Navigation Links */}
-            <nav className="hidden lg:flex items-center gap-8">
+            <nav className="hidden lg:flex items-center gap-7 xl:gap-9">
               {siteConfig.navLinks.map((link) => {
-                if (link.submenu) {
-                  return (
-                    <div
-                      key={link.name}
-                      className="relative group py-2"
-                    >
-                      <Link
-                        href={link.href}
-                        className={`flex items-center gap-1.5 font-bold text-sm transition-colors ${pathname.startsWith("/services")
-                          ? "text-[#62cb08]"
-                          : "text-[#1a1817] hover:text-[#62cb08]"
-                          }`}
-                      >
-                        {link.name}
-                        <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-200" />
-                      </Link>
-
-                      {/* Dropdown Menu */}
-                      <div className="absolute top-full left-0 w-64 bg-white border border-black/10 rounded-2xl shadow-2xl p-3 opacity-0 translate-y-3 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
-                        {link.submenu.map((sub) => (
-                          <Link
-                            key={sub.name}
-                            href={sub.href}
-                            className="block px-4 py-2.5 rounded-xl text-sm font-semibold text-[#5a5856] hover:text-[#1a1817] hover:bg-[#73eb0d]/20 transition-all"
-                          >
-                            {sub.name}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                }
-
                 const isActive = pathname === link.href;
                 return (
                   <Link
                     key={link.name}
                     href={link.href}
-                    className={`font-bold text-sm transition-colors relative py-1 ${isActive
-                      ? "text-[#62cb08]"
-                      : "text-[#1a1817] hover:text-[#62cb08]"
-                      }`}
+                    className="font-bold text-[17px] xl:text-[18px] !text-[#4a4542] hover:!text-[#73eb0d] transition-colors relative py-1"
                   >
                     {link.name}
                     {isActive && (
-                      <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#73eb0d] rounded-full" />
+                      <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#73eb0d] rounded-full" />
                     )}
                   </Link>
                 );
               })}
             </nav>
 
-            {/* Right Action Items */}
-            <div className="flex items-center gap-4">
-              {/* Drawer Toggle Icon */}
-              <button
-                onClick={() => setDrawerOpen(true)}
-                className="hidden sm:flex w-10 h-10 rounded-full bg-black/5 hover:bg-[#73eb0d] hover:text-[#1a1817] items-center justify-center text-[#1a1817] transition-all cursor-pointer border border-black/5"
-                aria-label="Open quick sidebar"
-              >
-                <LayoutGrid size={18} />
-              </button>
+            {/* Right Action Items (Shown when at top) */}
+            {!isSticky && (
+              <div className="hidden lg:flex items-center gap-4">
 
-              {/* "Get Free Quote" Button with Template Style Dual Layer Hover */}
-              <Link href="/contact" className="theme-btn">
-                <span className="link-effect">
-                  <span className="effect-1">Get Free Quote</span>
-                  <span className="effect-1">Get Free Quote</span>
-                </span>
-                <span className="arrow-all">
-                  <svg width="14" height="14" viewBox="0 0 12 12" fill="none">
-                    <path
-                      d="M2 6H10M10 6L6 2M10 6L6 10"
-                      stroke="#73eb0d"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-              </Link>
 
-              {/* Mobile Hamburger Toggle */}
+                {/* "Get Free Quote" Button with Template Style Dual Layer Hover */}
+                <Link href="/contact" className="theme-btn">
+                  <span className="link-effect">
+                    <span className="effect-1">Get Free Quote</span>
+                    <span className="effect-1">Get Free Quote</span>
+                  </span>
+                  <span className="arrow-all">
+                    <svg width="14" height="14" viewBox="0 0 12 12" fill="none">
+                      <path
+                        d="M2 6H10M10 6L6 2M10 6L6 10"
+                        stroke="#73eb0d"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                </Link>
+              </div>
+            )}
+
+            {/* Mobile Hamburger Toggle */}
+            <div className="lg:hidden flex items-center">
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden w-10 h-10 rounded-xl bg-black/5 text-[#1a1817] flex items-center justify-center hover:bg-[#73eb0d] transition-colors"
+                className="w-10 h-10 rounded-xl bg-black/5 text-[#061153] flex items-center justify-center hover:bg-[#73eb0d] transition-colors"
                 aria-label="Toggle mobile menu"
               >
                 {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
@@ -235,31 +219,24 @@ export const Header: React.FC = () => {
         {/* Mobile Navigation Dropdown */}
         {mobileMenuOpen && (
           <div className="lg:hidden bg-white border-t border-black/10 px-6 py-6 space-y-4 shadow-xl">
-            {siteConfig.navLinks.map((link) => (
-              <div key={link.name} className="border-b border-black/5 pb-2">
-                <Link
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block text-base font-bold text-[#1a1817] hover:text-[#62cb08]"
-                >
-                  {link.name}
-                </Link>
-                {link.submenu && (
-                  <div className="pl-4 mt-2 space-y-2">
-                    {link.submenu.map((sub) => (
-                      <Link
-                        key={sub.name}
-                        href={sub.href}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="block text-sm text-[#5a5856] hover:text-[#62cb08]"
-                      >
-                        • {sub.name}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
+            {siteConfig.navLinks.map((link) => {
+              const isActive = pathname === link.href;
+
+              return (
+                <div key={link.name} className="border-b border-black/5 pb-2">
+                  <Link
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="inline-block text-[17px] font-bold text-black hover:text-[#73eb0d] transition-colors relative py-1"
+                  >
+                    <span>{link.name}</span>
+                    {isActive && (
+                      <span className="block h-0.5 w-full bg-[#73eb0d] rounded-full mt-0.5" />
+                    )}
+                  </Link>
+                </div>
+              );
+            })}
             <div className="pt-2 text-xs text-[#5a5856] space-y-2">
               <p>📍 {siteConfig.contact.address}</p>
               <p>📞 {siteConfig.contact.phone}</p>

@@ -1,0 +1,291 @@
+/*
+ * Evolix adjustments on top of the Inotek template CSS.
+ * Write selectors exactly as in the template (no `.inotek` prefix) – the build
+ * script scopes and recolours this file together with the template CSS.
+ * Rebuild with: npm run build:css
+ */
+
+/* `body` rules are mapped onto every `.inotek` wrapper. `overflow-x: hidden` would turn each
+   wrapper into a scroll container (and stop the newsletter's negative margin from overlapping
+   the footer); `clip` keeps the "no horizontal bleed" behaviour without that side effect. */
+body {
+  overflow-x: clip;
+}
+
+/* jQuery.Marquee replacement (see components/inotek/Marquee.tsx). */
+@keyframes inotek-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ------------------------------------------------------------------
+   Readable text on green. The template puts white text on its blue;
+   on Evolix green (#73eb0d) the brand black is used instead.
+   ------------------------------------------------------------------ */
+
+/* Green buttons keep dark text on hover (template switches to white). */
+.theme-btn:hover {
+  color: var(--dark-color);
+}
+
+/* About: "Reach out Us" card */
+.tv-about-section.style-5 .about-right .about-contact-card h4,
+.tv-about-section.style-5 .about-right .about-contact-card a {
+  color: var(--dark-color);
+}
+.tv-about-section.style-5 .about-right .about-contact-card .social-icon li a {
+  border-color: rgba(26, 24, 23, 0.25);
+  background: rgba(255, 255, 255, 0.3);
+}
+.tv-about-section.style-5 .about-right .about-contact-card .social-icon li a i {
+  color: var(--dark-color);
+}
+.tv-about-section.style-5 .about-right .about-contact-card .social-icon li a:hover {
+  background: var(--dark-color);
+}
+.tv-about-section.style-5 .about-right .about-contact-card .social-icon li a:hover i {
+  color: var(--theme-color);
+}
+
+/* Video: green stat box */
+.tv-video-section .stats-container .stat-box.two .box-inner .box-right .count-box {
+  color: var(--dark-color);
+}
+.tv-video-section .stats-container .stat-box.two p {
+  color: rgba(26, 24, 23, 0.75);
+}
+
+/* CTA band (green gradient) */
+.tv-cta-section.style-4 .sec-title.text-white {
+  color: var(--dark-color) !important;
+}
+.tv-cta-section.style-4 .theme-btn.style-2 {
+  border-color: var(--dark-color);
+  color: var(--dark-color);
+}
+.tv-cta-section.style-4 .theme-btn.style-2:hover {
+  background: var(--dark-color);
+  color: var(--white-color);
+}
+
+/* Testimonials: the rating badge sits on a dark circle, keep its text white. */
+.tv-testimonial-section.style-5 .testi-left .client-social-proof .social .icon.bg-dark {
+  color: var(--white-color);
+}
+
+/* Team CTA band (green overlay) */
+.tv-team-section.style-3 .sec-title.text-white {
+  color: var(--dark-color) !important;
+}
+.tv-team-section.style-3 .client-social-proof .text {
+  color: var(--dark-color);
+}
+
+/* ------------------------------------------------------------------
+   Layout differences between the static page and the Next.js app
+   ------------------------------------------------------------------ */
+
+/* The footer is rendered by the root layout, outside `.page-wrapper`. Lift the page above it so the
+   newsletter banner (mb--75) overlaps the footer exactly as in the template. */
+.page-wrapper {
+  z-index: 2;
+}
+
+/* Footer: our email + phone are longer than the template's samples. A smaller gap keeps both inside
+   the brand column (left of the divider line); if they still don't fit, the phone wraps below the email
+   instead of crossing the line. Each value stays on one line. */
+.footer-section .footer-brand .contact-info {
+  gap: 20px 30px;
+  flex-wrap: wrap;
+}
+.footer-section .contact-info .contact-item a {
+  white-space: nowrap;
+}
+
+/* Footer: blog titles limited to two lines (template proportions). */
+.footer-section .recent-post-item .recent-post-info .title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Marquee ticker on green: brand black text; the icon is the black/white Evolix mark
+   (public/assets/images/icons/evolix-mark-on-green.svg). */
+.marquee-wrap .marquee__group .m-item {
+  color: var(--dark-color);
+}
+
+/* Hero: Evolix mark next to the intro text gently zooms in and out (replaces the template's spinning star). */
+.zoom-pulse {
+  animation: zoom-pulse 2.4s ease-in-out infinite;
+}
+@keyframes zoom-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+/* Blog cards: excerpt limited to two lines like the template's copy. */
+.blog-single-box.style-3 .blog-content .text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Lenis 1.3 no longer adds `lenis-smooth`, which is what neutralised Bootstrap's
+   `:root { scroll-behavior: smooth }` in the template. Native smooth scrolling fights Lenis
+   (scrollTo / anchors / keyboard stop half-way), so turn it off while Lenis runs. Kept global. */
+html.lenis {
+  scroll-behavior: auto !important;
+}
+
+/* Services: hovering a card turns it green (template), so its text switches to brand black
+   instead of the template's white. */
+.service-box-five:hover .icon-top .icon span,
+.service-box-five:hover .service-top h4,
+.service-box-five:hover p {
+  color: var(--dark-color);
+}
+.service-box-five:hover .theme-btn {
+  background-color: transparent;
+  border: 1px solid rgba(26, 24, 23, 0.35);
+  color: var(--dark-color);
+}
+.service-box-five:hover .theme-btn .arrow-all-2 i svg path {
+  fill: var(--dark-color);
+}
+
+/* Services: "Explore More" buttons get a light black tint on hover. */
+.service-box-five .theme-btn {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.service-box-five .theme-btn:hover,
+.service-box-five:hover .theme-btn:hover {
+  background-color: rgba(26, 24, 23, 0.12);
+  border-color: rgba(26, 24, 23, 0.45);
+}
+
+/* ------------------------------------------------------------------
+   Inner pages: text on green backgrounds -> brand black
+   ------------------------------------------------------------------ */
+
+/* Feature cards: the green card (the dark `.bg-theme3` one keeps white text). */
+.tv-feature-section .tv-feature-box:not(.bg-theme3) h2 {
+  color: var(--dark-color);
+}
+.tv-feature-section .tv-feature-box:not(.bg-theme3) p {
+  color: rgba(26, 24, 23, 0.75);
+}
+.tv-feature-section .tv-feature-box:not(.bg-theme3) .logo img {
+  filter: brightness(0);
+}
+
+/* About: green "work with us" band. */
+.tv-cta-section.style-2 .sec-title.text-white {
+  color: var(--dark-color) !important;
+}
+
+/* Service detail sidebar: active / hovered item sits on a green fill. */
+.sidebar-service-list li.current a,
+.sidebar-service-list li a:hover,
+.sidebar-service-list li.current a::before,
+.sidebar-service-list li a:hover::before {
+  color: var(--dark-color);
+}
+
+/* Testimonial avatars: the template relies on its 71x70 placeholder images' natural size;
+   the real (higher-resolution) photos are pinned to that size. */
+.tv-testimonial-section.style-5 .testi-box-five .box-user .image img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+}
+
+/* Inner pages: start the dark breadcrumb banner below the floating site header, so the header's
+   dark logo and links stay readable (home page has no breadcrumb, so it is unaffected).
+   --header-height is measured by components/inotek/HeaderOffset.tsx; the fallbacks match the
+   header's resting height at each breakpoint until it runs. */
+.tv-breadcrumb-section {
+  padding-top: var(--header-height, 143px);
+}
+@media (max-width: 1023.98px) {
+  .tv-breadcrumb-section {
+    padding-top: var(--header-height, 85px);
+  }
+}
+@media (max-width: 639.98px) {
+  .tv-breadcrumb-section {
+    padding-top: var(--header-height, 77px);
+  }
+}
+
+/* Title character reveal (see components/inotek/InotekEffects.tsx). The template animates every
+   character with GSAP; these CSS animations look the same. `outline-offset` (no visible effect: the
+   characters have no outline) keeps them off the compositor: a composited animation would give each of
+   the hundreds of characters its own layer, which made every scroll frame far more expensive.
+   back.out(1.7) == cubic-bezier(0.34, 1.56, 0.64, 1). */
+.char-anim {
+  display: inline-block;
+  animation-duration: 0.8s;
+  animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation-fill-mode: both;
+}
+.char-anim-slide-right {
+  animation-name: inotek-char-slide-right;
+}
+.char-anim-slide-down {
+  animation-name: inotek-char-slide-down;
+}
+.char-anim-fade-up {
+  animation-name: inotek-char-fade-up;
+}
+.char-anim-zoom-in {
+  animation-name: inotek-char-zoom-in;
+}
+.char-anim-bounce-in {
+  animation-name: inotek-char-bounce-in;
+}
+.char-anim-rotate {
+  animation-name: inotek-char-rotate;
+}
+.char-anim-flip {
+  animation-name: inotek-char-flip;
+}
+@keyframes inotek-char-slide-right {
+  from { opacity: 0; transform: translateX(20px); outline-offset: 1px; }
+  to { opacity: 1; transform: none; outline-offset: 0; }
+}
+@keyframes inotek-char-slide-down {
+  from { opacity: 0; transform: translateY(-20px); outline-offset: 1px; }
+  to { opacity: 1; transform: none; outline-offset: 0; }
+}
+@keyframes inotek-char-fade-up {
+  from { opacity: 0; transform: translateY(20px); outline-offset: 1px; }
+  to { opacity: 1; transform: none; outline-offset: 0; }
+}
+@keyframes inotek-char-zoom-in {
+  from { opacity: 0; transform: scale(0); outline-offset: 1px; }
+  to { opacity: 1; transform: none; outline-offset: 0; }
+}
+@keyframes inotek-char-bounce-in {
+  from { opacity: 0; transform: scale(0.5); outline-offset: 1px; }
+  to { opacity: 1; transform: none; outline-offset: 0; }
+}
+@keyframes inotek-char-rotate {
+  from { opacity: 0; transform: rotate(-90deg); outline-offset: 1px; }
+  to { opacity: 1; transform: none; outline-offset: 0; }
+}
+@keyframes inotek-char-flip {
+  from { opacity: 0; transform: rotateY(90deg); outline-offset: 1px; }
+  to { opacity: 1; transform: none; outline-offset: 0; }
+}

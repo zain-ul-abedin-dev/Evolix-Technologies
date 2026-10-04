@@ -1,175 +1,154 @@
-"use strict";
-import React from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { Mail, Phone, MapPin, ArrowRight } from "lucide-react";
 import { siteConfig } from "@/config/site";
+import { blogImage } from "@/config/media";
+import { Img } from "@/components/inotek/Img";
 
-export const Footer: React.FC = () => {
+const INFO_LINKS = [
+  { name: "About Us", href: "/about" },
+  { name: "Our Services", href: "/services" },
+  { name: "Portfolio", href: "/projects" },
+  { name: "Latest Blog", href: "/blog" },
+  { name: "Contact Us", href: "/contact" },
+];
+
+// Short labels so each fits on one line, like the template's footer list.
+const SERVICE_LINKS = [
+  { name: "Web Development", slug: "web-development" },
+  { name: "UI/UX Design", slug: "ui-ux-design" },
+  { name: "Digital Marketing", slug: "seo-marketing" },
+  { name: "SEO Optimization", slug: "search-engine-optimization" },
+  { name: "Cloud Hosting", slug: "cloud-security" },
+];
+
+const FOOTER_POSTS = siteConfig.blogs.slice(0, 2).map((post) => ({ ...post, thumb: blogImage(post.slug, "thumb") }));
+
+/** Site footer (template `.footer-section`). */
+export function Footer() {
+  const { contact, social } = siteConfig;
+  const year = new Date().getFullYear();
+
   return (
-    <footer className="footer-section z-1 br-30 pt-75 bg-[#061153] text-white position-relative mx-30 mb-30 overflow-hidden mt-20">
-      {/* Background Graphic */}
-      <div className="absolute inset-0 opacity-15 pointer-events-none">
-        <Image
-          src="/assets/images/footer/hm1-bg01.webp"
-          alt="Footer Pattern"
-          fill
-          className="object-cover"
-        />
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10 pt-20 pb-12">
-        {/* 4-Column Footer Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-16 border-b border-white/10">
-          {/* Col 1: Brand & Contact */}
-          <div className="space-y-6">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-xl bg-[#73eb0d] flex items-center justify-center font-black text-[#061153] text-2xl">
-                E
+    <div className="inotek">
+      <footer className="footer-section z-1 br-30 xxl-br-0 pt-75 bg-dark position-relative mx-30 mb-30 xxl-m-0 overflow-hidden">
+        <div className="bg image mbm-screen">
+          <Img src="/assets/images/footer/hm1-bg01.webp" alt="" loading="lazy" />
+        </div>
+        <div className="footer-top space">
+          <div className="container">
+            <div className="row">
+              <div className="col-lg-4 col-md-4 col-sm-6 footer-brand">
+                <div className="brand-info wow fadeInUp" data-wow-delay=".2s">
+                  <div className="logo">
+                    <Link href="/">
+                      <Img src="/Evolix LOGO SVG -02.svg" alt={`${siteConfig.name} logo`} style={{ height: 42, width: "auto" }} />
+                    </Link>
+                  </div>
+                  <div className="contact-info">
+                    <div className="contact-item">
+                      <h3 className="title">FREE CONVERSATION</h3>
+                      <a href={`mailto:${contact.email}`}>
+                        <i className="fa-sharp fa-light fa-envelope" /> {contact.email}
+                      </a>
+                    </div>
+                    <div className="contact-item">
+                      <h3 className="title">CALL US :</h3>
+                      <a href={`tel:${contact.phone.replace(/\s/g, "")}`}>
+                        <i className="flaticon-phone" /> {contact.phone}
+                      </a>
+                    </div>
+                  </div>
+                  <div className="social-links">
+                    <a href={social.facebook} className="social-icon" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                      <i className="fab fa-facebook-f" />
+                    </a>
+                    <a href={social.twitter} className="social-icon" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)">
+                      <i className="fab fa-x-twitter" />
+                    </a>
+                    <a href={social.linkedin} className="social-icon" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                      <i className="fab fa-linkedin-in" />
+                    </a>
+                    <a href={social.instagram} className="social-icon" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                      <i className="fab fa-instagram" />
+                    </a>
+                  </div>
+                </div>
               </div>
-              <span className="font-extrabold text-2xl tracking-tight text-white">
-                Evolix <span className="text-[#73eb0d]">Tech</span>
-              </span>
-            </Link>
-            <p className="text-white/60 text-sm leading-relaxed">
-              Evolix Technologies provides cutting-edge IT solutions, custom web development, and digital transformation services.
-            </p>
-            <div className="space-y-3 text-sm text-white/80">
-              <div className="flex items-start gap-3">
-                <MapPin size={18} className="text-[#73eb0d] shrink-0 mt-1" />
-                <span>{siteConfig.contact.address}</span>
+              <div className="col-lg-4 col-md-4">
+                <div className="row">
+                  <div className="col-lg-6 col-md-6 p-0 sm-pl-15">
+                    <div className="footer-widget wow fadeInUp" data-wow-delay="0.4s">
+                      <h4 className="title">Information</h4>
+                      <ul className="list-unstyled">
+                        {INFO_LINKS.map((link) => (
+                          <li key={link.href}>
+                            <Link href={link.href}>{link.name}</Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="col-lg-6 col-md-6 p-0 sm-pl-15">
+                    <div className="footer-widget wow fadeInUp" data-wow-delay="0.6s">
+                      <h4 className="title">Services</h4>
+                      <ul className="list-unstyled">
+                        {SERVICE_LINKS.map((s) => (
+                          <li key={s.slug}>
+                            <Link href={`/services/${s.slug}`}>{s.name}</Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <Mail size={18} className="text-[#73eb0d] shrink-0" />
-                <a href={`mailto:${siteConfig.contact.email}`} className="hover:text-[#73eb0d] transition-colors">
-                  {siteConfig.contact.email}
-                </a>
-              </div>
-              <div className="flex items-center gap-3">
-                <Phone size={18} className="text-[#73eb0d] shrink-0" />
-                <a href={`tel:${siteConfig.contact.phone}`} className="hover:text-[#73eb0d] transition-colors">
-                  {siteConfig.contact.phone}
-                </a>
+              <div className="col-lg-1 md-d-none" />
+              <div className="col-lg-3 col-md-4">
+                <div className="footer-widget ml-0 mb-0 wow fadeInUp" data-wow-delay="0.8s">
+                  <h4 className="title">Latest Blog</h4>
+                  {FOOTER_POSTS.map((post, i) => (
+                    <div key={post.slug} className={`recent-post-item${i === FOOTER_POSTS.length - 1 ? " mb--20" : ""}`}>
+                      <figure className="image">
+                        <Link href={`/blog/${post.slug}`}>
+                          <Img src={post.thumb} alt="" loading="lazy" />
+                        </Link>
+                      </figure>
+                      <div className="recent-post-info">
+                        <h4 className="title">
+                          <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+                        </h4>
+                        <span className="post-date">{post.date.toUpperCase()}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-
-          {/* Col 2: Information */}
-          <div>
-            <h4 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#73eb0d]" /> Information
-            </h4>
-            <ul className="space-y-3 text-sm text-white/70">
-              <li>
-                <Link href="/about" className="hover:text-[#73eb0d] inline-flex items-center gap-1.5 transition-colors">
-                  <ArrowRight size={12} className="text-[#73eb0d]" /> About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="hover:text-[#73eb0d] inline-flex items-center gap-1.5 transition-colors">
-                  <ArrowRight size={12} className="text-[#73eb0d]" /> Our Team
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog" className="hover:text-[#73eb0d] inline-flex items-center gap-1.5 transition-colors">
-                  <ArrowRight size={12} className="text-[#73eb0d]" /> Latest Blog
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="hover:text-[#73eb0d] inline-flex items-center gap-1.5 transition-colors">
-                  <ArrowRight size={12} className="text-[#73eb0d]" /> Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy-policy" className="hover:text-[#73eb0d] inline-flex items-center gap-1.5 transition-colors">
-                  <ArrowRight size={12} className="text-[#73eb0d]" /> Career & Policies
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Col 3: Services */}
-          <div>
-            <h4 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#73eb0d]" /> Services
-            </h4>
-            <ul className="space-y-3 text-sm text-white/70">
-              {siteConfig.services.map((s) => (
-                <li key={s.id}>
-                  <Link
-                    href={`/services/${s.slug}`}
-                    className="hover:text-[#73eb0d] hover:translate-x-1 inline-flex items-center gap-1.5 transition-all"
-                  >
-                    <ArrowRight size={12} className="text-[#73eb0d]" /> {s.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Col 4: Recent Blog Posts matching template gallery images */}
-          <div>
-            <h4 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#73eb0d]" /> Latest Blog
-            </h4>
-            <div className="space-y-4">
-              <Link
-                href="/blog/top-seo-marketing-strategies-2026"
-                className="flex items-center gap-3 group"
-              >
-                <div className="w-16 h-16 rounded-xl overflow-hidden relative shrink-0 bg-white/10">
-                  <Image
-                    src="/assets/images/footer/gallery-1.webp"
-                    alt="Gallery 1"
-                    fill
-                    className="object-cover group-hover:scale-110 transition-transform"
-                  />
+        </div>
+        <div className="footer-bottom">
+          <div className="container">
+            <div className="row gy-15">
+              <div className="col-md-6">
+                <div className="copyright wow fadeInUp" data-wow-delay=".3s">
+                  <p className="mb-0">
+                    Copyright &copy; {year}{" "}
+                    <Link className="text-theme" href="/">
+                      {siteConfig.name}
+                    </Link>
+                    . All Rights Reserved.
+                  </p>
                 </div>
-                <div>
-                  <h5 className="text-xs font-semibold text-white group-hover:text-[#73eb0d] transition-colors line-clamp-2">
-                    Top 10 Most Popular Tools For Marketing
-                  </h5>
-                  <span className="text-[10px] text-[#73eb0d] font-bold mt-1 block">10 AUG, 2026</span>
+              </div>
+              <div className="col-md-6 text-md-end">
+                <div className="footer-policy wow fadeInUp" data-wow-delay=".6s">
+                  <Link href="/privacy-policy">Privacy Policy</Link>{" "}
+                  <Link href="/terms">Terms &amp; Conditions</Link>
                 </div>
-              </Link>
-
-              <Link
-                href="/blog/building-scalable-saas-nextjs"
-                className="flex items-center gap-3 group"
-              >
-                <div className="w-16 h-16 rounded-xl overflow-hidden relative shrink-0 bg-white/10">
-                  <Image
-                    src="/assets/images/footer/gallery-2.webp"
-                    alt="Gallery 2"
-                    fill
-                    className="object-cover group-hover:scale-110 transition-transform"
-                  />
-                </div>
-                <div>
-                  <h5 className="text-xs font-semibold text-white group-hover:text-[#73eb0d] transition-colors line-clamp-2">
-                    Business Growing Tips for Sales Globally
-                  </h5>
-                  <span className="text-[10px] text-[#73eb0d] font-bold mt-1 block">10 AUG, 2026</span>
-                </div>
-              </Link>
+              </div>
             </div>
           </div>
         </div>
-
-        {/* Bottom Bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/60">
-          <p>© {new Date().getFullYear()} Evolix Technologies. All Rights Reserved. Islamabad, Pakistan.</p>
-          <div className="flex items-center gap-6">
-            <Link href="/privacy-policy" className="hover:text-white transition-colors">
-              Privacy Policy
-            </Link>
-            <span>•</span>
-            <Link href="/terms" className="hover:text-white transition-colors">
-              Return & Refund Policy
-            </Link>
-          </div>
-        </div>
-      </div>
-    </footer>
+      </footer>
+    </div>
   );
-};
+}

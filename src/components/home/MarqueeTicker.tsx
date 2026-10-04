@@ -1,37 +1,25 @@
-"use strict";
-import React from "react";
-import Image from "next/image";
+import { Marquee } from "@/components/inotek/Marquee";
+import { Img } from "@/components/inotek/Img";
 
-export const MarqueeTicker: React.FC = () => {
-  const items = [
-    "Digital Marketing",
-    "Branding Solutions",
-    "Custom Website",
-    "Innovation Design",
-    "Cyber Security",
-    "Cloud Solutions",
-  ];
+const ITEMS = ["Digital Marketing", "Branding Solutions", "Custom Website", "Innovation Design", "Cyber Security"];
 
+/** Green service ticker (`.tv-marquee-section`). `inset` = inner-page variant with side margins. */
+export function MarqueeTicker({ inset = false }: { inset?: boolean }) {
   return (
-    <div className="bg-[#f4f7ff] text-[#061153] py-5 border-y border-[#061153]/10 overflow-hidden relative z-20">
-      <div className="marquee-container">
-        <div className="marquee-track flex items-center gap-12 text-sm lg:text-base font-extrabold uppercase tracking-widest text-[#061153]">
-          {[...items, ...items, ...items, ...items].map((item, index) => (
-            <div key={index} className="flex items-center gap-6 shrink-0">
-              <span className="flex items-center gap-3">
-                <Image
-                  src="/assets/images/icons/marquee-icon.png"
-                  alt="Icon"
-                  width={18}
-                  height={18}
-                  className="object-contain"
-                />
-                <span className="hover:text-[#5ebf0a] transition-colors">{item}</span>
-              </span>
-            </div>
-          ))}
+    <div className="tv-marquee-section bg-light position-relative">
+      <div className={`tv-marquee-inner${inset ? " mx-30 ml-mx-0" : ""} position-relative`}>
+        <div className="container-fluid p-0 overflow-hidden">
+          <div className="slider__marquee clearfix br-0 marquee-wrap style-2">
+            <Marquee className="marquee_mode marquee__group">
+              {ITEMS.map((item) => (
+                <div key={item} className="item m-item">
+                  <Img className="icon" src="/assets/images/icons/evolix-mark-on-green.svg" alt="" /> {item}
+                </div>
+              ))}
+            </Marquee>
+          </div>
         </div>
       </div>
     </div>
   );
-};
+}
